@@ -5,7 +5,6 @@ package main
 //
 import (
 	"ParserCombinator/ParserCombinator/ParserCore"
-	"fmt"
 )
 
 // DataObject is a structure that holds the parsed data we care about
@@ -20,29 +19,30 @@ type DataObject struct {
 // This is a list of rules that we can use to parse commands.
 var parserRules = []ParserCore.ParseRule{
 	{
+		//
+		// The MoveRunRule expects input of the form
+		// MOVE or RUN followed by an integer distrance and a compass direction such as
+		// MOVE 12 SOUTH or RUN 5 EAST
+		//
 		Name: "MoveOrRunRule",
 		Steps: []ParserCore.ParserRuleStep{
 			{
 				Name:         "MoveOrRun_Step1",
 				ParserType:   ParserCore.PARSE_STRING_CHOICE,
 				Options:      ParserCore.PARSE_OPTION_CONVER_TO_UPPERCASE,
-				ParsedValues: []string{"MOVE", "RUN"},
+				ParsedValues: []string{"MOVE", "RUN"}, // Accept either one
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 					if err != nil {
+						// If we don't get a MOVE Or RUN, skip to the next possible rule
 						return ParserCore.SKIP_RULE_ON_ERROR, err
 					}
-					if data == nil {
-						return ParserCore.PARSE_FAILURE, fmt.Errorf("data is nil")
-					}
-					do, ok := (*data).(*DataObject)
-					if !ok {
-						return ParserCore.PARSE_FAILURE, fmt.Errorf("invalid data type: expected *DataObject")
-					}
+					do := (*data).(*DataObject)
 					do.Command = token.(string)
 					return ParserCore.PARSE_SUCCESS, nil
 				},
 			},
 			{
+				// Get the integer distance
 				Name:       "MoveOrRun_Step2",
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
@@ -52,6 +52,7 @@ var parserRules = []ParserCore.ParseRule{
 				},
 			},
 			{
+				// Get the direction, which is a string from a list of choices
 				Name:         "MoveOrRun_Step3",
 				ParserType:   ParserCore.PARSE_STRING_CHOICE,
 				Options:      ParserCore.PARSE_OPTION_CONVER_TO_UPPERCASE,
@@ -65,6 +66,11 @@ var parserRules = []ParserCore.ParseRule{
 		},
 	},
 	{
+		//
+		// The WhatIsATRule expects a phrase of the form:
+		// WHAT IS AT <X>,<Y> where <X> and <Y> are integers ex:
+		// WHAT IS AT 92, 12
+		//
 		Name: "WhatIsAtRule",
 		Steps: []ParserCore.ParserRuleStep{
 			{
@@ -78,6 +84,7 @@ var parserRules = []ParserCore.ParseRule{
 				},
 			},
 			{
+				// Get the X integer position
 				Name:       "WhatIsAt_Step2",
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
@@ -86,6 +93,7 @@ var parserRules = []ParserCore.ParseRule{
 				},
 			},
 			{
+				// Get the comma separator
 				Name:       "WhatIsAt_Step3",
 				ParserType: ParserCore.PARSE_COMMA,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
@@ -93,6 +101,7 @@ var parserRules = []ParserCore.ParseRule{
 				},
 			},
 			{
+				// Get the Y integer position
 				Name:       "WhatIsAt_Step4",
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
