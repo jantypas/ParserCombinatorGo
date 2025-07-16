@@ -103,6 +103,6 @@ func main() {
 		println("Error parsing input:", err.Error())
 		return
 	} else {
-		println("Completed")
+		println("Completed", "[", do.Command, ":", do.Distance, ":", do.Direction, "]")
 	}
 }
