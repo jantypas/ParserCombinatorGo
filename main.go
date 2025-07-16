@@ -12,7 +12,7 @@ func main() {
 	do := Rulebase.DataObject{} // Create our special data object
 	p := ParserCore.ParserObject{
 		Debug:   true, // Enable debug output
-		Input:   "PLEASE What is at 153,54",
+		Input:   "Please What is at 153,54",
 		Exclude: []string{"?", "PLEASE"},
 	}
 	_, err := p.Parse(Rulebase.Rules, &do)

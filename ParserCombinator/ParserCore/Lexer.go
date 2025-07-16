@@ -12,6 +12,7 @@ package ParserCore
 // - EOF: End of file marker
 
 import (
+	"strings"
 	"unicode"
 )
 
@@ -50,20 +51,27 @@ type Token struct {
 
 // The core lexer object iself
 type Lexer struct {
-	input  string
-	pos    int
-	line   int
-	column int
+	input          string
+	pos            int
+	line           int
+	column         int
+	ignoredStrings []string
 }
 
 // NewLexer creates a new Lexer instance with the provided input string.
-func NewLexer(input string) *Lexer {
+func NewLexer(input string, exclude []string) *Lexer {
 	return &Lexer{
-		input:  input,
-		pos:    0,
-		line:   1,
-		column: 1,
+		input:          input,
+		pos:            0,
+		line:           1,
+		column:         1,
+		ignoredStrings: exclude,
 	}
+}
+
+// SetIgnoredStrings sets the list of strings to be ignored during tokenization
+func (l *Lexer) SetIgnoredStrings(ignored []string) {
+	l.ignoredStrings = ignored
 }
 
 // The workhorse of the system -- NextToken reads the next token from the input string.
@@ -90,7 +98,10 @@ func (l *Lexer) NextToken() Token {
 	case unicode.IsDigit(rune(l.input[l.pos])) || l.input[l.pos] == '-':
 		return l.readNumber()
 	case unicode.IsLetter(rune(l.input[l.pos])):
-		return l.readString()
+		if token := l.readString(); !l.shouldIgnore(token.Value) {
+			return token
+		}
+		return l.NextToken()
 	default:
 		return Token{Type: ERROR, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
 	}
@@ -198,4 +209,13 @@ func (l *Lexer) skipWhitespace() {
 			break
 		}
 	}
+}
+
+func (l *Lexer) shouldIgnore(value string) bool {
+	for _, ignored := range l.ignoredStrings {
+		if strings.EqualFold(value, ignored) {
+			return true
+		}
+	}
+	return false
 }

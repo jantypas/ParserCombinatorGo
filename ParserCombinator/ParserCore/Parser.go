@@ -218,9 +218,8 @@ func (p *ParserObject) Parse(rules []ParseRule, data interface{}) (int, error) {
 	if p.Debug {
 		fmt.Printf("Parsing input: %s\n", p.Input)
 	}
-	p.StripInputNoise(p.Exclude)
 	for _, rule := range rules {
-		l := NewLexer(p.Input)
+		l := NewLexer(p.Input, p.Exclude)
 		if p.Debug {
 			fmt.Printf("Parse: Trying rule: %s\n", rule.Name)
 		}
