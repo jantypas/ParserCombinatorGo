@@ -1,10 +1,14 @@
 package main
 
+// Parser demo program
+// This program demonstrates how to use the ParserCombinator library to parse commands
+//
 import (
 	"ParserCombinator/ParserCombinator/ParserCore"
 	"fmt"
 )
 
+// DataObject is a structure that holds the parsed data we care about
 type DataObject struct {
 	Command   string
 	Distance  int
@@ -13,6 +17,7 @@ type DataObject struct {
 	YPos      int
 }
 
+// This is a list of rules that we can use to parse commands.
 var parserRules = []ParserCore.ParseRule{
 	{
 		Name: "MoveOrRunRule",
@@ -100,8 +105,8 @@ var parserRules = []ParserCore.ParseRule{
 }
 
 func main() {
-	do := DataObject{}
-	_, err := ParserCore.Parse("What is at 153,54", parserRules, &do, true)
+	do := DataObject{} // Create our special data object
+	_, err := ParserCore.Parse("What is at 153,54", parserRules, &do, false)
 	if err != nil {
 		println("Error parsing input:", err.Error())
 		return

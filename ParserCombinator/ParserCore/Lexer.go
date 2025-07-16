@@ -1,5 +1,16 @@
 package ParserCore
 
+// Lexer is a simple lexical analyzer that tokenizes input strings.
+// It currently understands a limited set of token types including:
+// - STRING: Unquoted strings
+// - QUOTED_STRING: Strings enclosed in double quotes
+// - INTEGER: Whole numbers
+// - FLOAT: Decimal numbers
+// - COMMA: Comma character
+// - COLON: Colon character
+// - ERROR: Represents an error in tokenization
+// - EOF: End of file marker
+
 import (
 	"unicode"
 )
@@ -17,6 +28,7 @@ const (
 	COLON
 )
 
+// The names of the token types for easy reference.
 var TokenTypeNames = []string{
 	"ERROR_TYPE",
 	"EOF",
@@ -28,6 +40,7 @@ var TokenTypeNames = []string{
 	"COLON",
 }
 
+// Token represents a single token in the input string.
 type Token struct {
 	Type   TokenType
 	Value  string
@@ -35,6 +48,7 @@ type Token struct {
 	Column int
 }
 
+// The core lexer object iself
 type Lexer struct {
 	input  string
 	pos    int
@@ -42,6 +56,7 @@ type Lexer struct {
 	column int
 }
 
+// NewLexer creates a new Lexer instance with the provided input string.
 func NewLexer(input string) *Lexer {
 	return &Lexer{
 		input:  input,
@@ -51,6 +66,7 @@ func NewLexer(input string) *Lexer {
 	}
 }
 
+// The workhorse of the system -- NextToken reads the next token from the input string.
 func (l *Lexer) NextToken() Token {
 	l.skipWhitespace()
 

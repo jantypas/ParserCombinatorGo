@@ -17,6 +17,7 @@ const (
 	PARSE_STRING_LIST
 )
 
+// ParserNames is a list of names for the parser types.
 var ParserNames = []string{
 	"PARSE_ANY_STRING",
 	"PARSE_ANY_INTEGER",
@@ -58,13 +59,20 @@ type ParseRule struct {
 	Steps []ParserRuleStep
 }
 
+// parseRule processes a single rule with its steps.
+// It uses the Lexer to read tokens and applies the ParseHandler for each step.
+// If any step fails, it returns an error including a request to skip to the next rule
 func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, error) {
 	var result int
+	// For each step in the rule
 	for _, step := range rule.Steps {
 		if debug {
 			fmt.Printf("Parse: Trying step: %s for rule: %s\n", step.Name, rule.Name)
 			fmt.Printf("       Expecting token type %s with options %d\n", ParserNames[step.ParserType], step.Options)
 		}
+		// Call the lexer to get the next token -- requesting a specific type to be decoded
+		// If the type is wrong return an error
+		// If the type is correct, call the ParseHandler to process the token
 		switch step.ParserType {
 		case PARSE_ANY_STRING:
 			err, value := parseAnyString(l, step.Options)
@@ -169,6 +177,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 	return PARSE_SUCCESS, nil
 }
 
+// Parse processes the input string using the provided rules.
+// It initializes a Lexer with the input string and iterates through the rules.
+// For each rule, it attempts to parse the input and calls the ParseHandler for each step.
 func Parse(input string, rules []ParseRule, data interface{}, debug bool) (int, error) {
 	if debug {
 		fmt.Printf("Parsing input: %s\n", input)
