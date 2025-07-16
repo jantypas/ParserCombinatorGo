@@ -215,6 +215,11 @@ func Parse(l *Lexer, rules []ParseRule, data interface{}, debug bool) (int, erro
 		result, err := parseRule(l, rule, &data, debug)
 		if err != nil {
 			return result, err
+		} else {
+			if debug {
+				fmt.Printf("Parse: Successfully parsed rule: %s\n", rule.Name)
+			}
+			return result, nil
 		}
 	}
 	return PARSE_SUCCESS, nil
