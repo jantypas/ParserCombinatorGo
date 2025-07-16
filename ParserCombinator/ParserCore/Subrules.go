@@ -118,7 +118,7 @@ func parseStringList(l *Lexer, sl []string, opt int) (error, []string) {
 				value = strings.ToLower(tok.Value)
 			}
 			if value != sl[sitem] {
-				return fmt.Errorf("expected one of %v, got %s at line %d, column %d", sl, tok.Value, tok.Line, tok.Column), nil
+				return fmt.Errorf("Expected one of %v, got %s at line %d, column %d", sl, tok.Value, tok.Line, tok.Column), nil
 			}
 		}
 	}

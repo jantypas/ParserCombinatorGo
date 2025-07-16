@@ -88,7 +88,7 @@ var parserRules = []ParserCore.ParseRule{
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 					_ = (*data).(*DataObject)
-					return ParserCore.PARSE_FAILURE, fmt.Errorf("expected integer for distance")
+					return ParserCore.PARSE_SUCCESS, nil
 				},
 			},
 		},
@@ -97,8 +97,7 @@ var parserRules = []ParserCore.ParseRule{
 
 func main() {
 	do := DataObject{}
-	lex := ParserCore.NewLexer("MOVE 10 NORTH")
-	_, err := ParserCore.Parse(lex, parserRules, &do, true)
+	_, err := ParserCore.Parse("WHAT IS AT 12,31", parserRules, &do, true)
 	if err != nil {
 		println("Error parsing input:", err.Error())
 		return
