@@ -60,6 +60,12 @@ type ParseRule struct {
 	Steps []ParserRuleStep
 }
 
+func ifDebug(debug bool, f func(format string, a ...interface{}) (int, error), format string, a ...interface{}) {
+	if debug {
+		f(format, a...)
+	}
+}
+
 // parseRule processes a single rule with its steps.
 // It uses the Lexer to read tokens and applies the ParseHandler for each step.
 // If any step fails, it returns an error including a request to skip to the next rule
@@ -67,10 +73,8 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 	var result int
 	// For each step in the rule
 	for _, step := range rule.Steps {
-		if debug {
-			fmt.Printf("Parse: Trying step: %s for rule: %s\n", step.Name, rule.Name)
-			fmt.Printf("       Expecting token type %s with options %d\n", ParserNames[step.ParserType], step.Options)
-		}
+		ifDebug(debug, fmt.Printf, "Parse: Trying step: %s for rule: %s\n", step.Name, rule.Name)
+		ifDebug(debug, fmt.Printf, "       Expecting token type %s with options %d\n", ParserNames[step.ParserType], step.Options)
 		// Call the lexer to get the next token -- requesting a specific type to be decoded
 		// If the type is wrong return an error
 		// If the type is correct, call the ParseHandler to process the token
@@ -78,9 +82,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_ANY_STRING:
 			err, value := parseAnyString(l, step.Options)
 			if err != nil {
-				if debug {
-					fmt.Printf("Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
-				}
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -94,6 +96,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_ANY_FLOAT:
 			err, value := parseAnyFloat(l, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -108,6 +111,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_ANY_INTEGER:
 			err, value := parseAnyInteger(l, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -122,6 +126,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_ANY_QUOTED_STRING:
 			err, value := parseAnyQuotedString(l, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -136,6 +141,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_COMMA:
 			err, value := parseComma(l, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -150,6 +156,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_COLON:
 			err, value := parseColon(l, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -164,6 +171,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_STRING_CHOICE:
 			err, value := parseStringChoice(l, step.ParsedValues, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
@@ -178,6 +186,7 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 		case PARSE_STRING_LIST:
 			err, _ := parseStringList(l, step.ParsedValues, step.Options)
 			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
 					return SKIP_RULE_ON_ERROR, err
 				} else {
