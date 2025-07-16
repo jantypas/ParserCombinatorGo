@@ -38,7 +38,7 @@ type ParserRuleStep struct {
 	ParserType   int
 	Options      int
 	ParsedValues []string
-	ParseHandler func(err error, token interface{}, tokType int, data interface{}) (int, error, interface{})
+	ParseHandler func(err error, token interface{}, tokType int, data *interface{}) (int, error)
 }
 
 // ParserRule defines a rule that consists of multiple steps.
@@ -47,49 +47,175 @@ type ParseRule struct {
 	Steps []ParserRuleStep
 }
 
-func parseRule(l Lexer, rule ParseRule, data interface{}) (int, error, interface{}) {
+func parseRule(l Lexer, rule ParseRule, data *interface{}, debug bool) (int, error) {
+	var result int
 	for _, step := range rule.Steps {
+		if debug {
+			fmt.Printf("Parse: Trying step: %s for rule: %s\n", step.Name, rule.Name)
+		}
 		switch step.ParserType {
 		case PARSE_ANY_STRING:
 			err, value := parseAnyString(l, step.Options)
-			return step.ParseHandler(err, value, PARSE_ANY_STRING, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed string: %s\n", value)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_ANY_STRING, data)
+			if err != nil {
+				return result, err
+			}
 		case PARSE_ANY_FLOAT:
 			err, value := parseAnyFloat(l, step.Options)
-			return step.ParseHandler(err, value, PARSE_ANY_FLOAT, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed float: %f\n", value)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_ANY_FLOAT, data)
+			if err != nil {
+				return result, err
+			}
 		case PARSE_ANY_INTEGER:
 			err, value := parseAnyInteger(l, step.Options)
-			return step.ParseHandler(err, value, PARSE_ANY_INTEGER, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return result, err
+			} else {
+				result, err = step.ParseHandler(nil, value, PARSE_ANY_INTEGER, data)
+				if err != nil {
+					if debug {
+						fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+					}
+					return result, err
+				}
+			}
 		case PARSE_ANY_QUOTED_STRING:
 			err, value := parseAnyQuotedString(l, step.Options)
-			return step.ParseHandler(err, value, PARSE_ANY_QUOTED_STRING, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed quoted string: %s\n", value)
+				}
+			}
+			result, err := step.ParseHandler(err, value, PARSE_ANY_QUOTED_STRING, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return result, err
+			}
 		case PARSE_COMMA:
 			err, value := parseComma(l, step.Options)
-			return step.ParseHandler(err, value, PARSE_COMMA, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed comma: %s\n", value)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COMMA, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return result, err
+			}
 		case PARSE_COLON:
 			err, value := parseColon(l, step.Options)
-			return step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed colon: %s\n", value)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return result, err
+			}
 		case PARSE_STRING_CHOICE:
 			err, value := parseStringChoice(l, step.ParsedValues, step.Options)
-			return step.ParseHandler(err, value, PARSE_STRING_CHOICE, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed string choice: %s\n", value)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_STRING_CHOICE, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return result, err
+			}
 		case PARSE_STRING_LIST:
 			err, _ := parseStringList(l, step.ParsedValues, step.Options)
-			return step.ParseHandler(err, nil, PARSE_STRING_LIST, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return PARSE_FAILURE, err
+			} else {
+				if debug {
+					fmt.Printf("Parse: Successfully parsed string list: %v\n", step.ParsedValues)
+				}
+			}
+			result, err = step.ParseHandler(err, nil, PARSE_STRING_LIST, data)
+			if err != nil {
+				if debug {
+					fmt.Printf("Parse: Error in step %s: %v\n", step.Name, err)
+				}
+				return result, err
+			}
 		default:
-			return PARSE_FAILURE, fmt.Errorf("unknown parser type %d", step.ParserType), nil
+			return PARSE_FAILURE, fmt.Errorf("unknown parser type %d", step.ParserType)
 		}
 	}
-	return PARSE_FAILURE, fmt.Errorf("no steps defined for rule %s", rule.Name), nil
+	return PARSE_SUCCESS, nil
 }
 
-func Parse(l Lexer, rules []ParseRule, data interface{}) (int, error, interface{}) {
+func Parse(l Lexer, rules []ParseRule, data interface{}, debug bool) (int, error) {
+	if debug {
+		fmt.Printf("Parsing input: %s\n", l.input)
+	}
 	for _, rule := range rules {
-		result, err, parsedData := parseRule(l, rule, data)
-		if err != nil {
-			return result, err, parsedData
+		if debug {
+			fmt.Printf("Parse: Trying rule: %s\n", rule.Name)
 		}
-		if result == PARSE_SUCCESS {
-			return result, nil, parsedData
+		result, err := parseRule(l, rule, &data, debug)
+		if err != nil {
+			return result, err
 		}
 	}
-	return PARSE_FAILURE, fmt.Errorf("no matching rule found"), nil
+	return PARSE_SUCCESS, nil
 }

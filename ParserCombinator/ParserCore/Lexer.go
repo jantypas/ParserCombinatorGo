@@ -17,6 +17,17 @@ const (
 	COLON
 )
 
+var TokenTypeNames = []string{
+	"ERROR_TYPE",
+	"EOF",
+	"STRING",
+	"QUOTED_STRING",
+	"INTEGER",
+	"FLOAT",
+	"COMMA",
+	"COLON",
+}
+
 type Token struct {
 	Type   TokenType
 	Value  string

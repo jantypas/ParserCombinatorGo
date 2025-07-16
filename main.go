@@ -1,6 +1,9 @@
 package main
 
-import "ParserCombinator/ParserCombinator/ParserCore"
+import (
+	"ParserCombinator/ParserCombinator/ParserCore"
+	"fmt"
+)
 
 type DataObject struct {
 	Command   string
@@ -19,26 +22,27 @@ var parserRules = []ParserCore.ParseRule{
 				ParsedValues: []string{"MOVE", "RUN"},
 				ParseHandler: func(err error,
 					token interface{}, tokenType int,
-					data interface{}) (int, error, interface{}) {
+					data *interface{}) (int, error) {
 					if err != nil {
-						return ParserCore.SKIP_RULE_ON_ERROR, err, nil
+						return ParserCore.PARSE_FAILURE, err
 					} else {
-						do := data.(*DataObject)
+						do, ok := (*data).(*DataObject)
+						if !ok {
+							return ParserCore.PARSE_FAILURE, fmt.Errorf("expected *DataObject, got %T", *data)
+						}
 						do.Command = token.(string)
-						return ParserCore.PARSE_SUCCESS, nil, do
+						return ParserCore.PARSE_SUCCESS, nil
 					}
 				},
 			},
 			{
 				Name:       "MoveOrRun_Step2",
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
-				ParseHandler: func(err error, token interface{}, tokType int, data interface{}) (int, error, interface{}) {
+				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 					if err != nil {
-						return ParserCore.PARSE_FAILURE, err, "We were expecting an integer distance"
+						return ParserCore.PARSE_FAILURE, err
 					} else {
-						do := data.(*DataObject)
-						do.Distance = token.(int)
-						return ParserCore.PARSE_SUCCESS, nil, do
+						return ParserCore.PARSE_SUCCESS, nil
 					}
 				},
 			},
@@ -49,13 +53,11 @@ var parserRules = []ParserCore.ParseRule{
 				ParsedValues: []string{"NORTH", "SOUTH", "EAST", "WEST"},
 				ParseHandler: func(err error,
 					token interface{}, tokenType int,
-					data interface{}) (int, error, interface{}) {
+					data *interface{}) (int, error) {
 					if err != nil {
-						return ParserCore.PARSE_FAILURE, err, "We expect NORTH, SOUTH, EAST or WEST"
+						return ParserCore.PARSE_FAILURE, err
 					} else {
-						do := data.(*DataObject)
-						do.Direction = token.(string)
-						return ParserCore.PARSE_SUCCESS, nil, do
+						return ParserCore.PARSE_SUCCESS, nil
 					}
 				},
 			},
@@ -69,13 +71,11 @@ var parserRules = []ParserCore.ParseRule{
 				ParserType:   ParserCore.PARSE_STRING_LIST,
 				Options:      ParserCore.PARSE_OPTION_CONVER_TO_UPPERCASE,
 				ParsedValues: []string{"WHAT", "IS", "AT"},
-				ParseHandler: func(err error, token interface{}, tokType int, data interface{}) (int, error, interface{}) {
+				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 					if err != nil {
-						return ParserCore.PARSE_FAILURE, err, "We expect WHAT IS AT"
+						return ParserCore.PARSE_FAILURE, err
 					} else {
-						do := data.(*DataObject)
-						do.Command = "WHAT IS AT"
-						return ParserCore.PARSE_SUCCESS, nil, do
+						return ParserCore.PARSE_SUCCESS, nil
 					}
 				},
 			},
@@ -85,14 +85,22 @@ var parserRules = []ParserCore.ParseRule{
 
 func main() {
 	lex := ParserCore.NewLexer("MOVE 10 NORTH")
-	_, err, i := ParserCore.Parse(*lex, parserRules, &DataObject{})
+	_, err := ParserCore.Parse(*lex, parserRules, &DataObject{}, true)
 	if err != nil {
 		println("Error parsing input:", err.Error())
 		return
 	} else {
-		do := i.(*DataObject)
-		println("Command:", do.Command)
-		println("Distance:", do.Distance)
-		println("Direction:", do.Direction)
+		println("Completed")
 	}
+}
+func handleData(data *interface{}) (*DataObject, error) {
+	if data == nil {
+		return nil, fmt.Errorf("data is nil")
+	}
+
+	do, ok := (*data).(*DataObject)
+	if !ok {
+		return nil, fmt.Errorf("invalid data type: expected *DataObject")
+	}
+	return do, nil
 }
