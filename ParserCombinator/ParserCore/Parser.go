@@ -47,7 +47,7 @@ type ParseRule struct {
 	Steps []ParserRuleStep
 }
 
-func parseRule(l Lexer, rule ParseRule, data *interface{}, debug bool) (int, error) {
+func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, error) {
 	var result int
 	for _, step := range rule.Steps {
 		if debug {
@@ -204,7 +204,7 @@ func parseRule(l Lexer, rule ParseRule, data *interface{}, debug bool) (int, err
 	return PARSE_SUCCESS, nil
 }
 
-func Parse(l Lexer, rules []ParseRule, data interface{}, debug bool) (int, error) {
+func Parse(l *Lexer, rules []ParseRule, data interface{}, debug bool) (int, error) {
 	if debug {
 		fmt.Printf("Parsing input: %s\n", l.input)
 	}

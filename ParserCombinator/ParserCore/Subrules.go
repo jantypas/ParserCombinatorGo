@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func parseAnyString(l Lexer, opt int) (error, string) {
+func parseAnyString(l *Lexer, opt int) (error, string) {
 	tok := l.NextToken()
 	if tok.Type == STRING {
 		if opt&PARSE_OPTION_CONVER_TO_UPPERCASE != 0 {
@@ -22,7 +22,7 @@ func parseAnyString(l Lexer, opt int) (error, string) {
 	}
 }
 
-func parseAnyInteger(l Lexer, opt int) (error, int) {
+func parseAnyInteger(l *Lexer, opt int) (error, int) {
 	tok := l.NextToken()
 	if tok.Type == INTEGER {
 		var value int
@@ -36,7 +36,7 @@ func parseAnyInteger(l Lexer, opt int) (error, int) {
 	}
 }
 
-func parseAnyFloat(l Lexer, opt int) (error, float64) {
+func parseAnyFloat(l *Lexer, opt int) (error, float64) {
 	tok := l.NextToken()
 	if tok.Type == FLOAT {
 		var value float64
@@ -50,7 +50,7 @@ func parseAnyFloat(l Lexer, opt int) (error, float64) {
 	}
 }
 
-func parseAnyQuotedString(l Lexer, opt int) (error, string) {
+func parseAnyQuotedString(l *Lexer, opt int) (error, string) {
 	tok := l.NextToken()
 	if tok.Type == QUOTED_STRING {
 		if opt&PARSE_OPTION_CONVER_TO_UPPERCASE != 0 {
@@ -67,7 +67,7 @@ func parseAnyQuotedString(l Lexer, opt int) (error, string) {
 	}
 }
 
-func parseComma(l Lexer, opt int) (error, string) {
+func parseComma(l *Lexer, opt int) (error, string) {
 	tok := l.NextToken()
 	if tok.Type == COMMA {
 		return nil, tok.Value
@@ -76,7 +76,7 @@ func parseComma(l Lexer, opt int) (error, string) {
 	}
 }
 
-func parseColon(l Lexer, opt int) (error, string) {
+func parseColon(l *Lexer, opt int) (error, string) {
 	tok := l.NextToken()
 	if tok.Type == COLON {
 		return nil, tok.Value
@@ -85,7 +85,7 @@ func parseColon(l Lexer, opt int) (error, string) {
 	}
 }
 
-func parseStringChoice(l Lexer, choices []string, opt int) (error, string) {
+func parseStringChoice(l *Lexer, choices []string, opt int) (error, string) {
 	tok := l.NextToken()
 	if tok.Type == STRING {
 		value := tok.Value
@@ -106,7 +106,7 @@ func parseStringChoice(l Lexer, choices []string, opt int) (error, string) {
 	}
 }
 
-func parseStringList(l Lexer, sl []string, opt int) (error, []string) {
+func parseStringList(l *Lexer, sl []string, opt int) (error, []string) {
 	var value string
 	for sitem := range sl {
 		tok := l.NextToken()
