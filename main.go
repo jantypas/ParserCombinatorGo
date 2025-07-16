@@ -9,6 +9,8 @@ type DataObject struct {
 	Command   string
 	Distance  int
 	Direction string
+	XPos      int
+	YPos      int
 }
 
 var parserRules = []ParserCore.ParseRule{
@@ -66,6 +68,7 @@ var parserRules = []ParserCore.ParseRule{
 				Options:      ParserCore.PARSE_OPTION_CONVER_TO_UPPERCASE,
 				ParsedValues: []string{"WHAT", "IS", "AT"},
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
+					(*data).(*DataObject).Command = "WHATIS"
 					return ParserCore.PARSE_SUCCESS, nil
 				},
 			},
@@ -73,6 +76,7 @@ var parserRules = []ParserCore.ParseRule{
 				Name:       "WhatIsAt_Step2",
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
+					(*data).(*DataObject).XPos = token.(int)
 					return ParserCore.PARSE_SUCCESS, nil
 				},
 			},
@@ -87,7 +91,7 @@ var parserRules = []ParserCore.ParseRule{
 				Name:       "WhatIsAt_Step4",
 				ParserType: ParserCore.PARSE_ANY_INTEGER,
 				ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
-					_ = (*data).(*DataObject)
+					(*data).(*DataObject).YPos = token.(int)
 					return ParserCore.PARSE_SUCCESS, nil
 				},
 			},
@@ -97,11 +101,13 @@ var parserRules = []ParserCore.ParseRule{
 
 func main() {
 	do := DataObject{}
-	_, err := ParserCore.Parse("WHAT IS AT 12,31", parserRules, &do, true)
+	_, err := ParserCore.Parse("What is at 153,54", parserRules, &do, true)
 	if err != nil {
 		println("Error parsing input:", err.Error())
 		return
 	} else {
-		println("Completed", "[", do.Command, ":", do.Distance, ":", do.Direction, "]")
+		println("Completed",
+			"[", do.Command, ":", do.Distance, ":", do.Direction,
+			" X:", do.XPos, " Y:", do.YPos, "]")
 	}
 }
