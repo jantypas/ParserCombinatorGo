@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+type ParserObject struct {
+	Debug   bool // Debug flag to control debug output
+	Input   string
+	Exclude []string // List of tokens to exclude from parsing
+}
+
 // Constants
 // These are the types of objects we can parse
 const (
@@ -208,29 +214,30 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 // Parse processes the input string using the provided rules.
 // It initializes a Lexer with the input string and iterates through the rules.
 // For each rule, it attempts to parse the input and calls the ParseHandler for each step.
-func Parse(input string, rules []ParseRule, data interface{}, debug bool) (int, error) {
-	if debug {
-		fmt.Printf("Parsing input: %s\n", input)
+func (p *ParserObject) Parse(rules []ParseRule, data interface{}) (int, error) {
+	if p.Debug {
+		fmt.Printf("Parsing input: %s\n", p.Input)
 	}
+	p.StripInputNoise(p.Exclude)
 	for _, rule := range rules {
-		l := NewLexer(input)
-		if debug {
+		l := NewLexer(p.Input)
+		if p.Debug {
 			fmt.Printf("Parse: Trying rule: %s\n", rule.Name)
 		}
-		result, err := parseRule(l, rule, &data, debug)
+		result, err := parseRule(l, rule, &data, p.Debug)
 		switch result {
 		case PARSE_SUCCESS:
-			if debug {
+			if p.Debug {
 				fmt.Printf("Parse: Rule %s succeeded\n", rule.Name)
 			}
 			return result, err
 		case PARSE_FAILURE:
-			if debug {
+			if p.Debug {
 				fmt.Printf("Parse: Rule %s failed with error: %s\n", rule.Name, err.Error())
 			}
 			return result, err
 		case SKIP_RULE_ON_ERROR:
-			if debug {
+			if p.Debug {
 				fmt.Printf("Parse: Rule %s skipped due to error: %s\n", rule.Name, err.Error())
 			}
 			continue

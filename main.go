@@ -10,7 +10,13 @@ import (
 
 func main() {
 	do := Rulebase.DataObject{} // Create our special data object
-	_, err := ParserCore.Parse("What is at 153,54", Rulebase.Rules, &do, true)
+	p := ParserCore.ParserObject{
+		Debug:   true, // Enable debug output
+		Input:   "What is at 153,54",
+		Exclude: []string{"?", "PLEASE"},
+	}
+	_, err := p.Parse(Rulebase.Rules, &do)
+
 	if err != nil {
 		println("Error parsing input:", err.Error())
 		return
