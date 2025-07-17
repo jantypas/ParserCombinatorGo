@@ -18,6 +18,7 @@ import (
 
 type TokenType int
 
+// TokenType represents the different types of tokens that can be recognized by the lexer.
 const (
 	ERROR TokenType = iota
 	EOF
@@ -27,6 +28,13 @@ const (
 	FLOAT
 	COMMA
 	COLON
+	QUESTION
+	LESS_THAN
+	GREATER_THAN
+	EXCLAMATION
+	PLUS
+	PERCENT
+	EQUAL
 )
 
 // The names of the token types for easy reference.
@@ -39,6 +47,13 @@ var TokenTypeNames = []string{
 	"FLOAT",
 	"COMMA",
 	"COLON",
+	"QUESTION",
+	"LESS_THAN",
+	"GREATER_THAN",
+	"EXCLAMATION",
+	"PLUS",
+	"PERCENT",
+	"EQUAL",
 }
 
 // Token represents a single token in the input string.
@@ -92,6 +107,41 @@ func (l *Lexer) NextToken() Token {
 		return token
 	case l.input[l.pos] == ':':
 		token := Token{Type: COLON, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '?':
+		token := Token{Type: QUESTION, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '<':
+		token := Token{Type: LESS_THAN, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '>':
+		token := Token{Type: GREATER_THAN, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '!':
+		token := Token{Type: EXCLAMATION, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '+':
+		token := Token{Type: PLUS, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '%':
+		token := Token{Type: PERCENT, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
+		l.pos++
+		l.column++
+		return token
+	case l.input[l.pos] == '=':
+		token := Token{Type: EQUAL, Value: string(l.input[l.pos]), Line: l.line, Column: l.column}
 		l.pos++
 		l.column++
 		return token
