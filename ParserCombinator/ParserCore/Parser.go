@@ -21,6 +21,13 @@ const (
 	PARSE_COLON
 	PARSE_STRING_CHOICE
 	PARSE_STRING_LIST
+	PARSE_QUESTION
+	PARSE_LESS_THAN
+	PARSE_GREATER_THAN
+	PARSE_EXCLAMATION
+	PARSE_PLUS
+	PARSE_PERCENT
+	PARSE_EQUAL
 )
 
 // ParserNames is a list of names for the parser types.
@@ -33,6 +40,13 @@ var ParserNames = []string{
 	"PARSE_COLON",
 	"PARSE_STRING_CHOICE",
 	"PARSE_STRING_LIST",
+	"PARSE_QUESTION",
+	"PARSE_LESS_THAN",
+	"PARSE_GREATER_THAN",
+	"PARSE_EXCLAMATION",
+	"PARSE_PLUS",
+	"PARSE_PERCENT",
+	"PARSE_EQUAL",
 }
 
 // When we parse something, here are possible error codes.
@@ -169,7 +183,6 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
-
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
 			if err != nil {
 				return result, err
@@ -201,6 +214,105 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			}
 
 			result, err = step.ParseHandler(err, nil, PARSE_STRING_LIST, data)
+			if err != nil {
+				return result, err
+			}
+		case PARSE_QUESTION:
+			err, value := parseQuestion(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				return result, err
+			}
+		case PARSE_LESS_THAN:
+			err, value := parseLessThan(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				return result, err
+			}
+		case PARSE_GREATER_THAN:
+			err, value := parseGreaterThan(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				return result, err
+			}
+
+		case PARSE_EXCLAMATION:
+			err, value := parseExclamation(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				return result, err
+			}
+		case PARSE_PLUS:
+			err, value := parsePlus(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				return result, err
+			}
+		case PARSE_PERCENT:
+			err, value := parsePercent(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
+			if err != nil {
+				return result, err
+			}
+		case PARSE_EQUAL:
+			err, value := parseEqual(l, step.Options)
+			if err != nil {
+				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
+				if step.SkipOnTypeError {
+					return SKIP_RULE_ON_ERROR, err
+				} else {
+					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+				}
+			}
+			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
 			if err != nil {
 				return result, err
 			}

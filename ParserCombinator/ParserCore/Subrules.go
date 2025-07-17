@@ -124,3 +124,66 @@ func parseStringList(l *Lexer, sl []string, opt int) (error, []string) {
 	}
 	return nil, sl
 }
+
+func parseQuestion(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == QUESTION {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected QUESTION, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
+
+func parseLessThan(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == LESS_THAN {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected LESS_THAN, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
+
+func parseGreaterThan(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == GREATER_THAN {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected GREATER_THAN, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
+
+func parseExclamation(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == EXCLAMATION {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected EXCLAMATION, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
+
+func parseEqual(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == EQUAL {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected EQUALS, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
+
+func parsePlus(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == PLUS {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected PLUS, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
+
+func parsePercent(l *Lexer, opt int) (error, string) {
+	tok := l.NextToken()
+	if tok.Type == PERCENT {
+		return nil, tok.Value
+	} else {
+		return fmt.Errorf("expected PERCENT, got %s at line %d, column %d", tok.Value, tok.Line, tok.Column), ""
+	}
+}
