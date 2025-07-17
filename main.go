@@ -18,11 +18,11 @@ func main() {
 		Exclude: []string{"?", "PLEASE"},    // Ignore these words
 	}
 	// Do the actual parse step with our rules
-	_, err := p.Parse(Rulebase.Rules, &do)
+	res, err := p.Parse(Rulebase.Rules, &do)
 
 	// If we get an error response, we had a problem parsing the input
-	if err != nil {
-		println("Error parsing input:", err.Error())
+	if res != ParserCore.PARSE_RESULT_SUCCESS || err != nil {
+		println("Error parsing input:", res, err.Error())
 		return
 	} else {
 		// We parsed it, so decode our data object
