@@ -51,9 +51,9 @@ var ParserNames = []string{
 
 // When we parse something, here are possible error codes.
 const (
-	PARSE_SUCCESS = iota
-	PARSE_FAILURE
-	SKIP_RULE_ON_ERROR
+	PARSE_RESULT_SUCCESS = iota
+	PARSE_RESULT_FAILURE
+	PARSE_RESULT_SKIP
 )
 
 // Options allow us to modify text before parsing
@@ -104,9 +104,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_ANY_STRING, data)
@@ -118,9 +118,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 
@@ -133,9 +133,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 
@@ -148,9 +148,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 
@@ -163,9 +163,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 
@@ -178,9 +178,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -192,9 +192,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 
@@ -207,9 +207,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 
@@ -222,9 +222,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -236,9 +236,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -250,9 +250,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -265,9 +265,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -279,9 +279,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -293,9 +293,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -307,9 +307,9 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 			if err != nil {
 				ifDebug(debug, fmt.Printf, "Parse: Error parsing step %s in rule %s: %s\n", step.Name, rule.Name, err.Error())
 				if step.SkipOnTypeError {
-					return SKIP_RULE_ON_ERROR, err
+					return PARSE_RESULT_SKIP, err
 				} else {
-					return PARSE_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
+					return PARSE_RESULT_FAILURE, fmt.Errorf("error parsing step %s in rule %s: %w", step.Name, rule.Name, err)
 				}
 			}
 			result, err = step.ParseHandler(err, value, PARSE_COLON, data)
@@ -317,10 +317,10 @@ func parseRule(l *Lexer, rule ParseRule, data *interface{}, debug bool) (int, er
 				return result, err
 			}
 		default:
-			return PARSE_FAILURE, fmt.Errorf("unknown parser type %d", step.ParserType)
+			return PARSE_RESULT_FAILURE, fmt.Errorf("unknown parser type %d", step.ParserType)
 		}
 	}
-	return PARSE_SUCCESS, nil
+	return PARSE_RESULT_SUCCESS, nil
 }
 
 // Parse processes the input string using the provided rules.
@@ -337,22 +337,22 @@ func (p *ParserObject) Parse(rules []ParseRule, data interface{}) (int, error) {
 		}
 		result, err := parseRule(l, rule, &data, p.Debug)
 		switch result {
-		case PARSE_SUCCESS:
+		case PARSE_RESULT_SUCCESS:
 			if p.Debug {
 				fmt.Printf("Parse: Rule %s succeeded\n", rule.Name)
 			}
 			return result, err
-		case PARSE_FAILURE:
+		case PARSE_RESULT_FAILURE:
 			if p.Debug {
 				fmt.Printf("Parse: Rule %s failed with error: %s\n", rule.Name, err.Error())
 			}
 			return result, err
-		case SKIP_RULE_ON_ERROR:
+		case PARSE_RESULT_SKIP:
 			if p.Debug {
 				fmt.Printf("Parse: Rule %s skipped due to error: %s\n", rule.Name, err.Error())
 			}
 			continue
 		}
 	}
-	return PARSE_FAILURE, fmt.Errorf("no rules matched")
+	return PARSE_RESULT_FAILURE, fmt.Errorf("no rules matched")
 }

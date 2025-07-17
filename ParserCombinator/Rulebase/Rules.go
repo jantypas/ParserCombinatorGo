@@ -22,11 +22,11 @@ var moveRunRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				if err != nil {
 					// If we don't get a MOVE Or RUN, skip to the next possible rule
-					return ParserCore.SKIP_RULE_ON_ERROR, err
+					return ParserCore.PARSE_RESULT_SKIP, err
 				}
 				do := (*data).(*DataObject)
 				do.Command = token.(string)
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 		{
@@ -36,7 +36,7 @@ var moveRunRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				do := (*data).(*DataObject)
 				do.Distance = token.(int)
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 		{
@@ -48,7 +48,7 @@ var moveRunRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				do := (*data).(*DataObject)
 				do.Direction = token.(string)
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 	},
@@ -66,11 +66,11 @@ var WhatIsRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				if err != nil {
 					// If we don't get the expected string, skip to the next rule
-					return ParserCore.SKIP_RULE_ON_ERROR, err
+					return ParserCore.PARSE_RESULT_SKIP, err
 				}
 				do := (*data).(*DataObject)
 				do.Command = "WHAT IS AT"
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 		{
@@ -80,7 +80,7 @@ var WhatIsRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				do := (*data).(*DataObject)
 				do.X = token.(int)
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 		{
@@ -90,9 +90,9 @@ var WhatIsRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				if err != nil {
 					// If we don't get a comma, we can't continue
-					return ParserCore.SKIP_RULE_ON_ERROR, err
+					return ParserCore.PARSE_RESULT_SKIP, err
 				}
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 		{
@@ -102,11 +102,11 @@ var WhatIsRule = ParserCore.ParseRule{
 			ParseHandler: func(err error, token interface{}, tokType int, data *interface{}) (int, error) {
 				if err != nil {
 					// If we don't get an integer, we can't continue
-					return ParserCore.SKIP_RULE_ON_ERROR, err
+					return ParserCore.PARSE_RESULT_SKIP, err
 				}
 				do := (*data).(*DataObject)
 				do.Y = token.(int)
-				return ParserCore.PARSE_SUCCESS, nil
+				return ParserCore.PARSE_RESULT_SUCCESS, nil
 			},
 		},
 	},
