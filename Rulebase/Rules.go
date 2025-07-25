@@ -1,7 +1,7 @@
 package Rulebase
 
 import (
-	"ParserCombinator/ParserCombinator/ParserCore"
+	"ParserCombinatorGo/ParserCore"
 	"errors"
 )
 

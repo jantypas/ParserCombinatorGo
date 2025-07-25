@@ -4,8 +4,8 @@ package main
 // This program demonstrates how to use the ParserCombinator library to parse commands
 //
 import (
-	"ParserCombinator/ParserCombinator/ParserCore"
-	"ParserCombinator/ParserCombinator/Rulebase"
+	"ParserCombinatorGo/ParserCore"
+	"ParserCombinatorGo/Rulebase"
 	"encoding/json"
 	"fmt"
 )
