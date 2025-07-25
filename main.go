@@ -4,10 +4,10 @@ package main
 // This program demonstrates how to use the ParserCombinator library to parse commands
 //
 import (
-	"ParserCombinatorGo/ParserCore"
-	"ParserCombinatorGo/Rulebase"
 	"encoding/json"
 	"fmt"
+	"github.com/jantypas/ParserCombinatorGo/ParserCore"
+	"github.com/jantypas/ParserCombinatorGo/Rulebase"
 )
 
 func main() {

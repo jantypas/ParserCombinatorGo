@@ -1,8 +1,8 @@
 package Rulebase
 
 import (
-	"ParserCombinatorGo/ParserCore"
 	"errors"
+	"github.com/jantypas/ParserCombinatorGo/ParserCore"
 )
 
 // For our stock example, we store the decoded data here
