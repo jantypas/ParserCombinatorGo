@@ -1,3 +1,3 @@
-module github.com/jantypas/ParserCombinatorGo
+module ParserCombinatorGo
 
 go 1.24
